@@ -1,28 +1,41 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext.tsx';
+import { useAuth } from '../context/AuthContext.tsx';
 import LanguageToggle from './LanguageToggle';
-import { Home, LayoutDashboard, BarChart3, UserPlus } from 'lucide-react';
+import { Home, LayoutDashboard, BarChart3, UserPlus, LogOut, LogIn } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 const navItems = {
   ar: [
     { name: 'الرئيسية', path: '/', icon: Home },
     { name: 'لوحة التحكم', path: '/dashboard', icon: LayoutDashboard },
     { name: 'الإحصائيات', path: '/stats', icon: BarChart3 },
-    { name: 'التسجيل', path: '/register', icon: UserPlus },
   ],
   fr: [
     { name: 'Accueil', path: '/', icon: Home },
     { name: 'Tableau de Bord', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Statistiques', path: '/stats', icon: BarChart3 },
-    { name: 'Inscription', path: '/register', icon: UserPlus },
   ],
 };
 
 const Header: React.FC = () => {
   const { language, isRTL } = useLanguage();
+  const { user, signOut } = useAuth();
   const items = navItems[language];
+
+  const authButtonContent = user ? {
+    name: language === 'ar' ? 'تسجيل الخروج' : 'Déconnexion',
+    icon: LogOut,
+    action: signOut,
+    variant: 'destructive' as const,
+  } : {
+    name: language === 'ar' ? 'تسجيل الدخول' : 'Connexion',
+    icon: LogIn,
+    path: '/auth',
+    variant: 'default' as const,
+  };
 
   return (
     <header className={cn(
@@ -49,6 +62,27 @@ const Header: React.FC = () => {
               {item.name}
             </Link>
           ))}
+          
+          {/* Auth/Logout Button in Nav */}
+          {user ? (
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={authButtonContent.action}
+              className="text-sm font-medium transition-colors hover:text-destructive flex items-center gap-1"
+            >
+              <authButtonContent.icon className="h-4 w-4" />
+              {authButtonContent.name}
+            </Button>
+          ) : (
+            <Link
+              to={authButtonContent.path!}
+              className="text-sm font-medium transition-colors hover:text-primary flex items-center gap-1"
+            >
+              <authButtonContent.icon className="h-4 w-4" />
+              {authButtonContent.name}
+            </Link>
+          )}
         </nav>
 
         {/* Controls */}

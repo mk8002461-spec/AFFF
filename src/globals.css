@@ -99,3 +99,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Conceptual Arabic Font Class */
+.font-arabic {
+  font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif; /* Placeholder for a suitable Arabic font */
+}

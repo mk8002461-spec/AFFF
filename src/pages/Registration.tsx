@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext.tsx';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,7 +7,9 @@ import { cn } from '@/lib/utils';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { showSuccess } from '@/utils/toast';
+import { showSuccess, showError } from '@/utils/toast';
+import { supabase } from '@/lib/supabase';
+import { Loader2 } from 'lucide-react';
 
 const registrationSchema = z.object({
   fullName: z.string().min(3, { message: "الاسم الكامل مطلوب." }),
@@ -20,11 +22,12 @@ type RegistrationFormValues = z.infer<typeof registrationSchema>;
 
 const Registration: React.FC = () => {
   const { language, isRTL } = useLanguage();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const content = {
     ar: {
       title: "انضمي إلينا كمسوّقة",
-      subtitle: "املئي النموذج أدناه لبدء رحلتك في التسويق بالعمولة.",
+      subtitle: "املئي النموذج أدناه لبدء رحلتك في التسويق بالعمولة. سيتم مراجعة طلبك.",
       submit: "إرسال طلب التسجيل",
       fields: {
         fullName: "الاسم الكامل",
@@ -33,10 +36,11 @@ const Registration: React.FC = () => {
         city: "المدينة",
       },
       successMessage: "تم إرسال طلبك بنجاح! سنتواصل معك قريباً.",
+      errorMessage: "فشل إرسال الطلب. يرجى المحاولة مرة أخرى.",
     },
     fr: {
       title: "Rejoignez-nous en tant que Marketeuse",
-      subtitle: "Remplissez le formulaire ci-dessous pour commencer votre parcours d'affiliation.",
+      subtitle: "Remplissez le formulaire ci-dessous pour commencer votre parcours d'affiliation. Votre demande sera examinée.",
       submit: "Soumettre la demande d'inscription",
       fields: {
         fullName: "Nom Complet",
@@ -45,6 +49,7 @@ const Registration: React.FC = () => {
         city: "Ville",
       },
       successMessage: "Votre demande a été soumise avec succès ! Nous vous contacterons bientôt.",
+      errorMessage: "Échec de l'envoi de la demande. Veuillez réessayer.",
     },
   };
 
@@ -60,11 +65,31 @@ const Registration: React.FC = () => {
     },
   });
 
-  const onSubmit = (data: RegistrationFormValues) => {
-    console.log("Registration Data:", data);
-    // ملاحظة: هنا يتم إرسال البيانات إلى Google Sheets
-    showSuccess(currentContent.successMessage);
-    form.reset();
+  const onSubmit = async (data: RegistrationFormValues) => {
+    setIsSubmitting(true);
+    
+    // إرسال البيانات إلى جدول 'marketers' في Supabase
+    const { error } = await supabase
+      .from('marketers')
+      .insert([
+        { 
+          full_name: data.fullName, 
+          email: data.email, 
+          phone: data.phone, 
+          city: data.city,
+          // يمكن إضافة حقل 'status' هنا لتعيين حالة الطلب (مثلاً: 'pending')
+        },
+      ]);
+
+    if (error) {
+      console.error("Supabase Insert Error:", error);
+      showError(currentContent.errorMessage);
+    } else {
+      showSuccess(currentContent.successMessage);
+      form.reset();
+    }
+    
+    setIsSubmitting(false);
   };
 
   return (
@@ -131,8 +156,8 @@ const Registration: React.FC = () => {
             )}
           />
 
-          <Button type="submit" className="w-full bg-amber-600 hover:bg-amber-700">
-            {currentContent.submit}
+          <Button type="submit" className="w-full bg-amber-600 hover:bg-amber-700" disabled={isSubmitting}>
+            {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : currentContent.submit}
           </Button>
         </form>
       </Form>

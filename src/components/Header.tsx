@@ -18,20 +18,25 @@ const navItems = {
     { name: 'Tableau de Bord', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Statistiques', path: '/stats', icon: BarChart3 },
   ],
+  en: [
+    { name: 'Home', path: '/', icon: Home },
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Statistics', path: '/stats', icon: BarChart3 },
+  ],
 };
 
 const Header: React.FC = () => {
   const { language, isRTL } = useLanguage();
   const { user, signOut } = useAuth();
-  const items = navItems[language];
+  const items = navItems[language as 'ar' | 'fr' | 'en'];
 
   const authButtonContent = user ? {
-    name: language === 'ar' ? 'تسجيل الخروج' : 'Déconnexion',
+    name: language === 'ar' ? 'تسجيل الخروج' : language === 'fr' ? 'Déconnexion' : 'Sign Out',
     icon: LogOut,
     action: signOut,
     variant: 'destructive' as const,
   } : {
-    name: language === 'ar' ? 'تسجيل الدخول' : 'Connexion',
+    name: language === 'ar' ? 'تسجيل الدخول' : language === 'fr' ? 'Connexion' : 'Sign In',
     icon: LogIn,
     path: '/auth',
     variant: 'default' as const,
@@ -46,7 +51,7 @@ const Header: React.FC = () => {
         {/* Logo/Title */}
         <Link to="/" className="flex items-center space-x-2">
           <span className="inline-block font-bold text-lg text-primary">
-            {language === 'ar' ? 'مسوّقات المغرب' : 'Marketeuses Maroc'}
+            {language === 'ar' ? 'مسوّقات المغرب' : language === 'fr' ? 'Marketeuses Maroc' : 'Moroccan Marketers'}
           </span>
         </Link>
 

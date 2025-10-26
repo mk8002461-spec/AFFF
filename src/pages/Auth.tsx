@@ -37,6 +37,8 @@ const Auth: React.FC = () => {
       toggle: isSigningUp ? "لديك حساب بالفعل؟ تسجيل الدخول" : "ليس لديك حساب؟ تسجيل جديد",
       successLogin: "تم تسجيل الدخول بنجاح!",
       successSignup: "تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني لتأكيد التسجيل.",
+      emailError: "صيغة البريد الإلكتروني غير صحيحة.",
+      passwordError: "كلمة المرور يجب أن تتكون من 6 أحرف على الأقل.",
     },
     fr: {
       title: isSigningUp ? "Créer un nouveau compte" : "Connexion",
@@ -47,13 +49,33 @@ const Auth: React.FC = () => {
       toggle: isSigningUp ? "Vous avez déjà un compte ? Connectez-vous" : "Pas de compte ? Inscrivez-vous",
       successLogin: "Connexion réussie !",
       successSignup: "Compte créé avec succès ! Veuillez vérifier votre email pour confirmation.",
+      emailError: "Format d'email incorrect.",
+      passwordError: "Le mot de passe doit contenir au moins 6 caractères.",
+    },
+    en: {
+      title: isSigningUp ? "Sign Up" : "Sign In",
+      subtitle: isSigningUp ? "Enter your details to create a marketer account." : "Enter your email and password.",
+      email: "Email",
+      password: "Password",
+      submit: isSigningUp ? "Sign Up" : "Sign In",
+      toggle: isSigningUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up",
+      successLogin: "Successfully signed in!",
+      successSignup: "Account created successfully! Please check your email for confirmation.",
+      emailError: "Invalid email format.",
+      passwordError: "Password must be at least 6 characters long.",
     },
   };
 
-  const currentContent = content[language];
+  const currentContent = content[language as 'ar' | 'fr' | 'en'];
+
+  // Update Zod schema messages based on current language
+  const localizedAuthSchema = z.object({
+    email: z.string().email({ message: currentContent.emailError }),
+    password: z.string().min(6, { message: currentContent.passwordError }),
+  });
 
   const form = useForm<AuthFormValues>({
-    resolver: zodResolver(authSchema),
+    resolver: zodResolver(localizedAuthSchema),
     defaultValues: {
       email: "",
       password: "",

@@ -37,6 +37,10 @@ const Registration: React.FC = () => {
       },
       successMessage: "تم إرسال طلبك بنجاح! سنتواصل معك قريباً.",
       errorMessage: "فشل إرسال الطلب. يرجى المحاولة مرة أخرى.",
+      fullNameError: "الاسم الكامل مطلوب.",
+      emailError: "صيغة البريد الإلكتروني غير صحيحة.",
+      phoneError: "رقم الهاتف مطلوب (10 أرقام على الأقل).",
+      cityError: "المدينة مطلوبة.",
     },
     fr: {
       title: "Rejoignez-nous en tant que Marketeuse",
@@ -50,13 +54,42 @@ const Registration: React.FC = () => {
       },
       successMessage: "Votre demande a été soumise avec succès ! Nous vous contacterons bientôt.",
       errorMessage: "Échec de l'envoi de la demande. Veuillez réessayer.",
+      fullNameError: "Le nom complet est requis.",
+      emailError: "Format d'email incorrect.",
+      phoneError: "Le numéro de téléphone est requis (au moins 10 chiffres).",
+      cityError: "La ville est requise.",
+    },
+    en: {
+      title: "Join Us as a Marketer",
+      subtitle: "Fill out the form below to start your affiliate marketing journey. Your application will be reviewed.",
+      submit: "Submit Registration Request",
+      fields: {
+        fullName: "Full Name",
+        email: "Email",
+        phone: "Phone Number",
+        city: "City",
+      },
+      successMessage: "Your request has been submitted successfully! We will contact you soon.",
+      errorMessage: "Failed to submit request. Please try again.",
+      fullNameError: "Full name is required.",
+      emailError: "Invalid email format.",
+      phoneError: "Phone number is required (at least 10 digits).",
+      cityError: "City is required.",
     },
   };
 
-  const currentContent = content[language];
+  const currentContent = content[language as 'ar' | 'fr' | 'en'];
+
+  // Update Zod schema messages based on current language
+  const localizedRegistrationSchema = z.object({
+    fullName: z.string().min(3, { message: currentContent.fullNameError }),
+    email: z.string().email({ message: currentContent.emailError }),
+    phone: z.string().min(10, { message: currentContent.phoneError }),
+    city: z.string().min(2, { message: currentContent.cityError }),
+  });
 
   const form = useForm<RegistrationFormValues>({
-    resolver: zodResolver(registrationSchema),
+    resolver: zodResolver(localizedRegistrationSchema),
     defaultValues: {
       fullName: "",
       email: "",

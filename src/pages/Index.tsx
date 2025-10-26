@@ -20,6 +20,7 @@ const Index: React.FC = () => {
         { icon: Heart, text: "مجتمع داعم: انضمي إلى نخبة المسوّقات المغربيات." },
       ],
       designNote: "تصميم أنيق وبسيط، مستوحى من الألوان المحايدة ولمسة عصرية مغربية.",
+      techNote: "*ملاحظة تقنية: سيتم استخدام Google Sheets لتخزين بيانات المسوّقات والطلبات، مما يضمن سهولة الإدارة والوصول عبر واجهات برمجة تطبيقات Google AI (مثل Vertex AI) لتحليل الإحصائيات وعرضها هنا.",
     },
     fr: {
       title: "Plateforme d'Affiliation pour les Marketeuses Marocaines",
@@ -32,10 +33,24 @@ const Index: React.FC = () => {
         { icon: Heart, text: "Communauté de soutien : Rejoignez l'élite des marketeuses marocaines." },
       ],
       designNote: "Design élégant et simple, inspiré des couleurs neutres avec une touche marocaine moderne.",
+      techNote: "*Note technique : Google Sheets sera utilisé pour stocker les données des marketeuses et des commandes, assurant une gestion facile et l'accès via les API Google AI (comme Vertex AI) pour analyser et afficher les statistiques ici.",
+    },
+    en: {
+      title: "Affiliate Marketing Platform for Moroccan Marketers",
+      subtitle: "Join the network of success. Track your orders and realize your profits with ease and Moroccan elegance.",
+      cta: "Start Your Journey Now",
+      featuresTitle: "Why Choose Moroccan Marketers?",
+      features: [
+        { icon: CheckCircle, text: "Full Transparency: Accurate tracking of delivered and returned orders." },
+        { icon: Zap, text: "Superior Performance: Instant statistics to help you optimize your results." },
+        { icon: Heart, text: "Supportive Community: Join the elite of Moroccan marketers." },
+      ],
+      designNote: "Elegant and simple design, inspired by neutral colors with a modern Moroccan touch.",
+      techNote: "*Technical Note: Google Sheets will be used to store marketer and order data, ensuring easy management and access via Google AI APIs (like Vertex AI) to analyze and display statistics here.",
     },
   };
 
-  const currentContent = content[language];
+  const currentContent = content[language as 'ar' | 'fr' | 'en'];
 
   return (
     <div className={cn("min-h-[calc(100vh-3.5rem)] flex flex-col items-center justify-center p-4", isRTL ? 'text-right' : 'text-left')} dir={isRTL ? 'rtl' : 'ltr'}>
@@ -75,7 +90,7 @@ const Index: React.FC = () => {
       {/* Google Integration Note */}
       <section className="mt-12 p-4 bg-secondary/50 rounded-lg max-w-4xl mx-auto">
         <p className="text-sm text-muted-foreground">
-          *ملاحظة تقنية: سيتم استخدام Google Sheets لتخزين بيانات المسوّقات والطلبات، مما يضمن سهولة الإدارة والوصول عبر واجهات برمجة تطبيقات Google AI (مثل Vertex AI) لتحليل الإحصائيات وعرضها هنا.
+          {currentContent.techNote}
         </p>
       </section>
     </div>

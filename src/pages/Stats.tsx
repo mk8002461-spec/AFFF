@@ -44,9 +44,22 @@ const Stats: React.FC = () => {
         success: "Taux de Succès",
       },
     },
+    en: {
+      title: "Platform General Statistics",
+      subtitle: "Overview of our marketer network performance.",
+      totalOrders: "Total Orders",
+      successRate: "Success Rate (Delivery)",
+      topMarketersTitle: "Top Marketers",
+      table: {
+        rank: "Rank",
+        name: "Name",
+        delivered: "Delivered Orders",
+        success: "Success Rate",
+      },
+    },
   };
 
-  const currentContent = content[language];
+  const currentContent = content[language as 'ar' | 'fr' | 'en'];
 
   return (
     <div className={cn("container py-12", isRTL ? 'text-right' : 'text-left')} dir={isRTL ? 'rtl' : 'ltr'}>

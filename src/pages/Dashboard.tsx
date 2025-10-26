@@ -43,9 +43,18 @@ const Dashboard: React.FC = () => {
       name: "Nom Complet",
       noResults: "Aucun résultat correspondant.",
     },
+    en: {
+      title: "Marketer Dashboard",
+      subtitle: "Welcome! Track your performance, delivered, and returned orders.",
+      searchPlaceholder: "Search by name or order count...",
+      delivered: "Delivered Orders",
+      returned: "Returned Orders",
+      name: "Full Name",
+      noResults: "No matching results found.",
+    },
   };
 
-  const currentContent = content[language];
+  const currentContent = content[language as 'ar' | 'fr' | 'en'];
 
   const filteredMarketers = useMemo(() => {
     if (!searchTerm) {
